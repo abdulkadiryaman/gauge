@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 const (
@@ -29,6 +30,24 @@ func formatScenarioHeading(scenarioHeading string) string {
 
 func formatStepText(stepText string) string {
 	return fmt.Sprintf("* %s\n", stepText)
+}
+
+func formatStep(step *step) string {
+	text := step.value
+	paramCount := strings.Count(text, PARAMETER_PLACEHOLDER)
+	for i := 0; i < paramCount; i++ {
+		argument := step.args[i]
+		formattedArg := ""
+		if argument.argType == tableArg {
+			formattedTable := formatTable(&argument.table)
+			formattedArg = fmt.Sprintf("\n%s", formattedTable)
+		} else {
+			formattedArg = fmt.Sprintf("\"%s\"", argument.value)
+		}
+		text = strings.Replace(text, PARAMETER_PLACEHOLDER, formattedArg, 1)
+	}
+
+	return formatStepText(text)
 }
 
 func formatHeading(heading, headingChar string) string {
@@ -90,4 +109,40 @@ func findLongestCellWidth(columnCells []tableCell, minValue int) int {
 		}
 	}
 	return longestLength
+}
+
+func formatItem(item item) string {
+	switch item.kind() {
+	case commentKind:
+		comment := item.(*comment)
+		return comment.value
+	case stepKind:
+		step := item.(*step)
+		return formatStep(step)
+	case tableKind:
+		table := item.(*table)
+		return formatTable(table)
+	case scenarioKind:
+		scenario := item.(*scenario)
+		var b bytes.Buffer
+		b.WriteString(formatScenarioHeading(scenario.heading.value))
+		b.WriteString(formatItems(scenario.items))
+		return string(b.Bytes())
+	}
+	return ""
+}
+
+func formatItems(items []item) string {
+	var result bytes.Buffer
+	for _, item := range items {
+		result.WriteString(formatItem(item))
+	}
+	return string(result.Bytes())
+}
+
+func formatSpecification(specification *specification) string {
+	var formattedText bytes.Buffer
+	formattedText.WriteString(formatSpecHeading(specification.heading.value))
+	formattedText.WriteString(formatItems(specification.items))
+	return string(formattedText.Bytes())
 }
