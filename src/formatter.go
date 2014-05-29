@@ -115,7 +115,7 @@ func formatItem(item item) string {
 	switch item.kind() {
 	case commentKind:
 		comment := item.(*comment)
-		return comment.value
+		return fmt.Sprintf("%s\n", comment.value)
 	case stepKind:
 		step := item.(*step)
 		return formatStep(step)
@@ -127,6 +127,18 @@ func formatItem(item item) string {
 		var b bytes.Buffer
 		b.WriteString(formatScenarioHeading(scenario.heading.value))
 		b.WriteString(formatItems(scenario.items))
+		return string(b.Bytes())
+	case tagKind:
+		tags := item.(*tags)
+		var b bytes.Buffer
+		b.WriteString("tags: ")
+		for i, tag := range tags.values {
+			b.WriteString(tag)
+			if (i + 1) != len(tags.values) {
+				b.WriteString(", ")
+			}
+		}
+		b.WriteString("\n")
 		return string(b.Bytes())
 	}
 	return ""
