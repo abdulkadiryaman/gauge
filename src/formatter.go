@@ -56,7 +56,7 @@ func formatHeading(heading, headingChar string) string {
 		length = HEADING_UNDERLINE_LENGTH
 	}
 
-	return fmt.Sprintf("%s\n%s\n\n", heading, getRepeatedChars(headingChar, length))
+	return fmt.Sprintf("%s\n%s\n", heading, getRepeatedChars(headingChar, length))
 }
 
 func formatTable(table *table) string {
@@ -115,6 +115,9 @@ func formatItem(item item) string {
 	switch item.kind() {
 	case commentKind:
 		comment := item.(*comment)
+		if comment.value == "\n" {
+			return comment.value
+		}
 		return fmt.Sprintf("%s\n", comment.value)
 	case stepKind:
 		step := item.(*step)
