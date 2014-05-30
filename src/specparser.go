@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"github.com/getgauge/common"
 	"strings"
 )
 
@@ -112,7 +113,7 @@ func (parser *specParser) generateTokens(specText string) ([]*token, *parseError
 			kind := parser.tokenKindBasedOnCurrentState(tableScope, tableRow, tableHeader)
 			newToken = &token{kind: kind, lineNo: parser.lineNo, lineText: line, value: strings.TrimSpace(trimmedLine)}
 		} else {
-			newToken = &token{kind: commentKind, lineNo: parser.lineNo, lineText: line, value: line}
+			newToken = &token{kind: commentKind, lineNo: parser.lineNo, lineText: line, value: common.TrimTrailingSpace(line)}
 		}
 		error := parser.accept(newToken)
 		if error != nil {

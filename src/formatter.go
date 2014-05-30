@@ -8,7 +8,7 @@ import (
 
 const (
 	HEADING_UNDERLINE_LENGTH = 20
-	TABLE_LEFT_SPACING       = 10
+	TABLE_LEFT_SPACING       = 5
 )
 
 func getRepeatedChars(character string, repeatCount int) string {
@@ -16,7 +16,6 @@ func getRepeatedChars(character string, repeatCount int) string {
 	for i := 0; i < repeatCount; i++ {
 		formatted = fmt.Sprintf("%s%s", formatted, character)
 	}
-
 	return formatted
 }
 
@@ -25,11 +24,7 @@ func formatSpecHeading(specHeading string) string {
 }
 
 func formatScenarioHeading(scenarioHeading string) string {
-	return fmt.Sprintf("\n%s", formatHeading(scenarioHeading, "-"))
-}
-
-func formatStepText(stepText string) string {
-	return fmt.Sprintf("* %s\n", stepText)
+	return fmt.Sprintf("%s", formatHeading(scenarioHeading, "-"))
 }
 
 func formatStep(step *step) string {
@@ -41,13 +36,15 @@ func formatStep(step *step) string {
 		if argument.argType == tableArg {
 			formattedTable := formatTable(&argument.table)
 			formattedArg = fmt.Sprintf("\n%s", formattedTable)
+		} else if argument.argType == dynamic {
+			formattedArg = fmt.Sprintf("<%s>", argument.value)
 		} else {
 			formattedArg = fmt.Sprintf("\"%s\"", argument.value)
 		}
 		text = strings.Replace(text, PARAMETER_PLACEHOLDER, formattedArg, 1)
 	}
-
-	return formatStepText(text)
+	stepText := fmt.Sprintf("* %s\n", text)
+	return stepText
 }
 
 func formatHeading(heading, headingChar string) string {
