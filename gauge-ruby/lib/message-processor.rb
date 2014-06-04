@@ -20,7 +20,7 @@ class ExecuteStepProcessor
   def create_arg_values arguments
     args = []
     arguments.each do |argument|
-      if (argument.type = "table")
+      if (argument.type == "table")
         args.push argument.table
       else
         args.push argument.value
