@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/getgauge/common"
 	"strings"
 )
 
@@ -90,10 +89,11 @@ func (parser *specParser) generateTokens(specText string) ([]*token, *parseError
 	parser.currentState = initial
 	for line, hasLine := parser.nextLine(); hasLine; line, hasLine = parser.nextLine() {
 		trimmedLine := strings.TrimSpace(line)
-		var newToken *token
 		if len(trimmedLine) == 0 {
-			newToken = &token{kind: commentKind, lineNo: parser.lineNo, lineText: line, value: "\n"}
-		} else if parser.isScenarioHeading(trimmedLine) {
+			continue
+		}
+		var newToken *token
+		if parser.isScenarioHeading(trimmedLine) {
 			newToken = &token{kind: scenarioKind, lineNo: parser.lineNo, lineText: line, value: strings.TrimSpace(trimmedLine[2:])}
 		} else if parser.isSpecHeading(trimmedLine) {
 			newToken = &token{kind: specKind, lineNo: parser.lineNo, lineText: line, value: strings.TrimSpace(trimmedLine[1:])}
@@ -113,7 +113,7 @@ func (parser *specParser) generateTokens(specText string) ([]*token, *parseError
 			kind := parser.tokenKindBasedOnCurrentState(tableScope, tableRow, tableHeader)
 			newToken = &token{kind: kind, lineNo: parser.lineNo, lineText: line, value: strings.TrimSpace(trimmedLine)}
 		} else {
-			newToken = &token{kind: commentKind, lineNo: parser.lineNo, lineText: line, value: common.TrimTrailingSpace(line)}
+			newToken = &token{kind: commentKind, lineNo: parser.lineNo, lineText: line, value: trimmedLine}
 		}
 		error := parser.accept(newToken)
 		if error != nil {
