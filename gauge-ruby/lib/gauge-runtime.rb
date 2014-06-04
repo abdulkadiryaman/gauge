@@ -6,7 +6,6 @@ require_relative 'executor'
 require_relative 'message-processor'
 
 HOST_NAME = 'localhost'
-PORT = 8888
 PORT_ENV = "GAUGE_INTERNAL_PORT"
 DEFAULT_IMPLEMENTATIONS_DIR_PATH = "#{Dir.pwd}/step_implementations"
 
@@ -52,7 +51,7 @@ def port()
   return port
 end
 
-
+STDOUT.sync = true
 socket = TCPSocket.open(HOST_NAME, port())
 load_steps(DEFAULT_IMPLEMENTATIONS_DIR_PATH)
 dispatch_messages(socket)

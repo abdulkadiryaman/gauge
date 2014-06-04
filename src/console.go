@@ -40,8 +40,9 @@ func (writer *consoleWriter) writeString(value string) {
 func (writer *consoleWriter) writeError(value string) {
 	if writer.isInsideStep {
 		writer.linesAfterLastStep += strings.Count(value, "\n")
+		writer.linesAfterLastStep += 1
 	}
-	terminal.Stdout.Colorf("@r%s", value)
+	terminal.Stdout.Colorf("@r%s\n", value)
 }
 
 func (writer *consoleWriter) writeSpecHeading(spec *specification) {

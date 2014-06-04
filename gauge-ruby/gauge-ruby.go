@@ -105,16 +105,16 @@ func runCommand(cmdName string, arg string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	//TODO: move to logs
-	//fmt.Println(cmd.Args)
+//	fmt.Println(cmd.Args)
 	var err error
 	err = cmd.Start()
 	if err != nil {
-		fmt.Printf("Failed to start Java. %s\n", err.Error())
+		fmt.Printf("Failed to start Ruby. %s\n", err.Error())
 		os.Exit(1)
 	}
 	err = cmd.Wait()
 	if err != nil {
-		fmt.Printf("Failed to start Java. %s\n", err.Error())
+		fmt.Printf("Failed to start Ruby. %s\n", err.Error())
 		os.Exit(1)
 	}
 }

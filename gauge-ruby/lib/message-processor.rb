@@ -69,7 +69,7 @@ end
 
 class StepNamesProcessor
   def process(message)
-    Main::StepNamesResponse.new(:steps => $steps_map.keys)
+    step_names_response = Main::StepNamesResponse.new(:steps => $steps_map.keys)
     Main::Message.new(:messageType => Main::Message::MessageType::StepNamesResponse, :messageId => message.messageId, :stepNamesResponse => step_names_response)
   end
 end
